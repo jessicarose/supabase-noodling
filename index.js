@@ -6,4 +6,55 @@ window.userToken = null
 
 document.addEventListener('DOMContentLoaded', function (event){
     var signUpForm = document.querySelector('#sign-up')
+    signUpForm.onsubmit = signUpSubmitted.bind(signUpForm)
+
+    var logInForm = document.querySelector('#log-in')
+    logInForm.onsubmit = logInSubmitted.bind(logInForm)
+
+    var userDetailsButton = document.querySelector('#user-button')
+    userDetailsButton.onclick = fetchUserDetails.bind(userDetailsButton)
+  
+    var logoutButton = document.querySelector('#logout-button')
+    logoutButton.onclick = logoutSubmitted.bind(logoutButton)
 })
+
+const signUpSubmitted = (event) => {
+    event.preventDefault()
+    const email = event.target[0].value
+    const password = event.target[1].value
+
+supabase.auth
+    .signUp({email, password})
+    .then((response) => {
+        response.error ? alert(response.error.message) : setToken(response)
+    })
+    .catch((err) => {
+        alert(err) 
+    })
+}
+
+const logInSubmitted = (event) => {
+    event.preventDefault()
+    const email = event.target[0].value
+    const password = event.target[1].value
+
+    supabase.auth
+    .signIn({email, password})
+    .then((response) => {
+        response.error ? alert(response.error.message) : setToken(response)
+    })
+    .catch((err) => {
+        alert(err.response.text) 
+    })
+}
+
+const fetchUserDetails = () => {
+    alert(JSON.stringify(supabase.auth.user()))
+}
+
+const logoutSubmitted = (event) => {
+    event.preventDefault()
+
+    supabase.auth
+    .signOut()
+}
