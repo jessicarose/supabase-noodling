@@ -57,4 +57,19 @@ const logoutSubmitted = (event) => {
 
     supabase.auth
     .signOut()
+    .then((_response) =>{
+        document.querySelector('#access-token').value = ""
+        document.querySelector('#refresh-token').value = ""
+    })
+}
+
+function setToken(response){
+    if (response.user.confirmation_sent_at && !response?.session.access_token){
+        alert('Confirmation email sent')
+    }
+    else {
+        document.querySelector('#access-token').value = response.session.access_token
+        document.querySelector('#refresh-token').value = response.session.refresh_token
+        alert('Logged in as ' + response.user.email)
+    }
 }
